@@ -89,7 +89,7 @@ export class GDBBackend extends events.EventEmitter implements IGDBBackend {
         }
     }
 
-    public getAsyncMode(): boolean {
+    public isAsyncMode(): boolean {
         return this.gdbAsync;
     }
 
