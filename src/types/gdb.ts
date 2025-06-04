@@ -87,6 +87,8 @@ export interface IGDBBackend extends EventEmitter {
 
     isNonStopMode: () => boolean;
 
+    isIgnoreRunning: () => boolean;
+
     isUseHWBreakpoint: () => boolean;
 
     // getBreakpointOptions called before inserting the breakpoint and this

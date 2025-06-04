@@ -1240,7 +1240,7 @@ export abstract class GDBDebugSessionBase extends LoggingDebugSession {
             variablesReference: 0,
         }; // default response
         try {
-            if(!this.gdb.isAsyncMode() && !this.gdb.isNonStopMode()) {  // if not in async mode, we need a frameId
+            if(!this.gdb.isAsyncMode() && !this.gdb.isNonStopMode() && !this.gdb.isIgnoreRunning()) {  // if not in async mode, we need a frameId
                 if (args.frameId === undefined) {
                     throw new Error(
                         'Evaluation of expression without frameId is not supported.'
@@ -1252,7 +1252,7 @@ export abstract class GDBDebugSessionBase extends LoggingDebugSession {
                 ? this.frameHandles.get(args.frameId)
                 : undefined;
 
-            if(!this.gdb.isAsyncMode() && !this.gdb.isNonStopMode()) {  // if not in async mode, we need a frameRef
+            if(!this.gdb.isAsyncMode() && !this.gdb.isNonStopMode() && !this.gdb.isIgnoreRunning()) {  // if not in async mode, we need a frameRef
                 if (!frameRef) {
                     this.sendResponse(response);
                     return;
