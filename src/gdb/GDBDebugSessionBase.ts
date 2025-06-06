@@ -1245,12 +1245,6 @@ export abstract class GDBDebugSessionBase extends LoggingDebugSession {
                         'Evaluation of expression without frameId is not supported.'
                     );
                 }
-            if(!this.gdb.isAsyncMode() && !this.gdb.isNonStopMode() && !this.gdb.isIgnoreRunning()) {  // if not in async mode, we need a frameId
-                if (args.frameId === undefined) {
-                    throw new Error(
-                        'Evaluation of expression without frameId is not supported.'
-                    );
-                }
             }
 
             const frameRef = args.frameId
