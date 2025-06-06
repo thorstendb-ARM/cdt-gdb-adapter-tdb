@@ -205,6 +205,15 @@ export class GDBBackend extends events.EventEmitter implements IGDBBackend {
         });
     }
 
+    public async sendintr(): Promise<void> {
+        if (this.proc) {
+            logger.verbose(`GDB signal: SIGINT to pid ${this.proc.pid}`);
+            this.proc.kill('SIGINT');
+        } else {
+            throw new Error('GDB is not running, cannot send SIGINT');
+        }
+    }
+
     public sendEnablePrettyPrint() {
         return this.sendCommand('-enable-pretty-printing');
     }
