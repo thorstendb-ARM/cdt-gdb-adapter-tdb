@@ -75,7 +75,7 @@ export function sendExecFinish(gdb: IGDBBackend, frameRef: FrameReference) {
     return gdb.sendCommand(command);
 }
 
-export function sendExecInterrupt(gdb: IGDBBackend, threadId?: number) {
+export async function sendExecInterrupt(gdb: IGDBBackend, threadId?: number) {
     let command = '-exec-interrupt';
 
     if (threadId !== undefined) {
@@ -85,4 +85,8 @@ export function sendExecInterrupt(gdb: IGDBBackend, threadId?: number) {
     }
 
     return gdb.sendCommand(command);
+}
+
+export async function sendSigint(gdb: IGDBBackend, _threadId?: number) {
+    return gdb.sendintr();
 }

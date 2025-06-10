@@ -42,6 +42,7 @@ import {
 import { IGDBBackend, IGDBBackendFactory } from '../types/gdb';
 import { getInstructions } from '../util/disassembly';
 import { calculateMemoryOffset } from '../util/calculateMemoryOffset';
+import { sendSigint } from '../mi';
 
 class ThreadWithStatus implements DebugProtocol.Thread {
     id: number;
@@ -403,7 +404,7 @@ export abstract class GDBDebugSessionBase extends LoggingDebugSession {
 
     protected async pauseIfNeeded(requireAsync = false): Promise<void> {
         this.waitPausedNeeded =
-            this.isRunning && (!requireAsync || this.gdb.getAsyncMode());
+            this.isRunning && (!requireAsync || this.gdb.isAsyncMode());
 
         if (this.waitPausedNeeded) {
             const waitPromise = new Promise<void>((resolve) => {
@@ -1239,22 +1240,32 @@ export abstract class GDBDebugSessionBase extends LoggingDebugSession {
             variablesReference: 0,
         }; // default response
         try {
-            if (args.frameId === undefined) {
-                throw new Error(
-                    'Evaluation of expression without frameId is not supported.'
-                );
+            if(!this.gdb.isAsyncMode() && !this.gdb.isNonStopMode() && !this.gdb.isIgnoreRunning()) {  // if not in async mode, we need a frameId
+                if (args.frameId === undefined) {
+                    throw new Error(
+                        'Evaluation of expression without frameId is not supported.'
+                    );
+                }
             }
 
             const frameRef = args.frameId
                 ? this.frameHandles.get(args.frameId)
                 : undefined;
 
-            if (!frameRef) {
-                this.sendResponse(response);
-                return;
+            if(!this.gdb.isAsyncMode() && !this.gdb.isNonStopMode() && !this.gdb.isIgnoreRunning()) {  // if not in async mode, we need a frameRef
+                if (!frameRef) {
+                    this.sendResponse(response);
+                    return;
+                }
             }
 
             if (args.expression.startsWith('>') && args.context === 'repl') {
+                if(args.expression.slice(1) == 'sigint') {
+                    // send SIGINT to GDB
+                    // this is used to interrupt a long running command in GDB
+                    return sendSigint(this.gdb);
+                }
+
                 const regexDisable = new RegExp(
                     '^\\s*disable\\s*(?:(?:breakpoint|count|delete|once)\\d*)?\\s*\\d*\\s*$'
                 );
