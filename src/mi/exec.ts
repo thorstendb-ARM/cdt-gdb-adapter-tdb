@@ -84,6 +84,9 @@ export async function sendExecInterrupt(gdb: IGDBBackend, threadId?: number) {
         command += ' --all';
     }
 
-    await gdb.sendintr();
     return gdb.sendCommand(command);
+}
+
+export async function sendSigint(gdb: IGDBBackend, _threadId?: number) {
+    return gdb.sendintr();
 }

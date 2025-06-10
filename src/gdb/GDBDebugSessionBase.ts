@@ -42,6 +42,7 @@ import {
 import { IGDBBackend, IGDBBackendFactory } from '../types/gdb';
 import { getInstructions } from '../util/disassembly';
 import { calculateMemoryOffset } from '../util/calculateMemoryOffset';
+import { sendSigint } from '../mi';
 
 class ThreadWithStatus implements DebugProtocol.Thread {
     id: number;
@@ -1259,6 +1260,12 @@ export abstract class GDBDebugSessionBase extends LoggingDebugSession {
             }
 
             if (args.expression.startsWith('>') && args.context === 'repl') {
+                if(args.expression.slice(1) == 'sigint') {
+                    // send SIGINT to GDB
+                    // this is used to interrupt a long running command in GDB
+                    return sendSigint(this.gdb);
+                }
+
                 const regexDisable = new RegExp(
                     '^\\s*disable\\s*(?:(?:breakpoint|count|delete|once)\\d*)?\\s*\\d*\\s*$'
                 );
