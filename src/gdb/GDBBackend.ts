@@ -237,7 +237,7 @@ export class GDBBackend extends events.EventEmitter implements IGDBBackend {
 
     public async sendintr(): Promise<void> {
         if (this.proc) {
-            logger.verbose(`GDB signal: SIGINT to pid ${this.proc.pid}`);
+            logger.verbose(`GDB signal: SIGINT to pid ${this.proc.getPID()}`);
             this.proc.kill('SIGINT');
         } else {
             throw new Error('GDB is not running, cannot send SIGINT');
