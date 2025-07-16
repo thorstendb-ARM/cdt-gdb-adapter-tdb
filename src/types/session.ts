@@ -15,7 +15,6 @@ export interface RequestArguments extends DebugProtocol.LaunchRequestArguments {
     gdbArguments?: string[];
     gdbAsync?: boolean;
     gdbNonStop?: boolean;
-    gdbIgnoreRunning?: boolean;
     // defaults to the environment of the process of the adapter
     environment?: Record<string, string | null>;
     program: string;

@@ -39,7 +39,6 @@ export class GDBBackend extends events.EventEmitter implements IGDBBackend {
     protected gdbAsync = false;
     protected gdbNonStop = false;
     protected hardwareBreakpoint = false;
-    protected gdbIgnoreRunning = false;
 
     constructor(protected readonly processManager: IGDBProcessManager) {
         super();
@@ -82,7 +81,6 @@ export class GDBBackend extends events.EventEmitter implements IGDBBackend {
         }
         await this.setNonStopMode(requestArgs.gdbNonStop);
         await this.setAsyncMode(requestArgs.gdbAsync);
-        await this.setIgnoreRunning(requestArgs.gdbIgnoreRunning);
     }
 
     public async setAsyncMode(isSet?: boolean) {
@@ -136,14 +134,6 @@ export class GDBBackend extends events.EventEmitter implements IGDBBackend {
 
     public isNonStopMode() {
         return this.gdbNonStop;
-    }
-
-    public async setIgnoreRunning(isSet?: boolean) {
-        this.gdbIgnoreRunning = isSet ?? false;
-    }
-
-    public isIgnoreRunning() {
-        return this.gdbIgnoreRunning;
     }
 
     // getBreakpointOptions called before inserting the breakpoint and this

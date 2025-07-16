@@ -221,8 +221,6 @@ export const gdbAsync: boolean =
     process.argv.indexOf('--test-gdb-async-off') === -1;
 export const gdbNonStop: boolean =
     process.argv.indexOf('--test-gdb-non-stop') !== -1;
-export const gdbIgnoreRunning: boolean =
-    process.argv.indexOf('--test-gdb-ignore-running') !== -1;
 export const skipMake: boolean = process.argv.indexOf('--skip-make') !== -1;
 export const gdbPath: string | undefined = getGdbPathCli();
 export const gdbServerPath: string = getGdbServerPathCli();
