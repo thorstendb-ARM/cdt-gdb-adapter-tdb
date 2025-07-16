@@ -13,13 +13,20 @@ import { dirname } from 'path';
 import { GDBFileSystemProcessManagerBase } from './GDBFileSystemProcessManagerBase';
 import { TargetLaunchRequestArguments } from '../../types/session';
 import { createEnvValues } from '../../util/createEnvValues';
-import { IGDBServerProcessManager, IStdioProcess } from '../../types/gdb';
+import { isProcessActive } from '../../util/processes';
+import {
+    GetPIDType,
+    IGDBServerProcessManager,
+    IStdioProcess,
+} from '../../types/gdb';
+
+type ConvertedChildProcess = ChildProcess & GetPIDType;
 
 export class GDBServerFileSystemProcessManager
     extends GDBFileSystemProcessManagerBase
     implements IGDBServerProcessManager
 {
-    protected proc?: ChildProcess;
+    protected proc?: ConvertedChildProcess;
     public gdbVersion?: string;
 
     protected token = 0;
@@ -61,12 +68,16 @@ export class GDBServerFileSystemProcessManager
         this.proc = spawn(serverExe, serverParams, {
             cwd: serverCwd,
             env: serverEnvironment,
-        });
+        }) as ConvertedChildProcess;
+        if (this.proc) {
+            this.proc.getPID = () => this.proc?.pid;
+        }
         return this.proc;
     }
+
     public async stop(): Promise<void> {
         return new Promise((resolve, reject) => {
-            if (!this.proc || this.proc.exitCode !== null) {
+            if (!this.proc || !isProcessActive(this.proc)) {
                 resolve();
             } else {
                 this.proc.on('exit', () => {
