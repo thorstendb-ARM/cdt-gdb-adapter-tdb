@@ -28,6 +28,8 @@ export function sendExecContinue(gdb: IGDBBackend, threadId?: number) {
     let command = '-exec-continue';
     if (threadId !== undefined) {
         command += ` --thread ${threadId}`;
+    } else {
+        command += ' --all';
     }
     return gdb.sendCommand(command);
 }
