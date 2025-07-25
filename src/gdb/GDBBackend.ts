@@ -107,7 +107,7 @@ export class GDBBackend extends events.EventEmitter implements IGDBBackend {
         }
     }
 
-    public getAsyncMode(): boolean {
+    public isAsyncMode(): boolean {
         return this.gdbAsync;
     }
 
@@ -233,6 +233,15 @@ export class GDBBackend extends events.EventEmitter implements IGDBBackend {
                 reject(new Error('gdb is not running.'));
             }
         });
+    }
+
+    public async sendintr(): Promise<void> {
+        if (this.proc) {
+            logger.verbose(`GDB signal: SIGINT to pid ${this.proc.getPID()}`);
+            this.proc.kill('SIGINT');
+        } else {
+            throw new Error('GDB is not running, cannot send SIGINT');
+        }
     }
 
     public sendEnablePrettyPrint() {

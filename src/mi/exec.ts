@@ -28,6 +28,8 @@ export function sendExecContinue(gdb: IGDBBackend, threadId?: number) {
     let command = '-exec-continue';
     if (threadId !== undefined) {
         command += ` --thread ${threadId}`;
+    } else {
+        command += ' --all';
     }
     return gdb.sendCommand(command);
 }
@@ -75,7 +77,7 @@ export function sendExecFinish(gdb: IGDBBackend, frameRef: FrameReference) {
     return gdb.sendCommand(command);
 }
 
-export function sendExecInterrupt(gdb: IGDBBackend, threadId?: number) {
+export async function sendExecInterrupt(gdb: IGDBBackend, threadId?: number) {
     let command = '-exec-interrupt';
 
     if (threadId !== undefined) {
@@ -85,4 +87,8 @@ export function sendExecInterrupt(gdb: IGDBBackend, threadId?: number) {
     }
 
     return gdb.sendCommand(command);
+}
+
+export async function sendSigint(gdb: IGDBBackend, _threadId?: number) {
+    return gdb.sendintr();
 }

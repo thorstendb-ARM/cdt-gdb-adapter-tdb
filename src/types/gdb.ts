@@ -84,7 +84,7 @@ export interface IGDBBackend extends EventEmitter {
 
     setAsyncMode: (isSet?: boolean) => Promise<void>;
 
-    getAsyncMode: () => boolean;
+    isAsyncMode: () => boolean;
 
     setNonStopMode: (isSet?: boolean) => Promise<void>;
 
@@ -127,6 +127,7 @@ export interface IGDBBackend extends EventEmitter {
     sendCommand<T>(command: string): Promise<T>;
     sendCommands(commands?: string[]): Promise<void>;
     gdbVersionAtLeast(targetVersion: string): boolean;
+    sendintr(): Promise<void>;
 
     on(
         event: 'consoleStreamOutput',
